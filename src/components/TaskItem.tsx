@@ -1,105 +1,74 @@
-import React from 'react';
-import type { Task, TaskStatus } from '../types';
+import DeleteIcon from "../icons/DeleteIcon";
+import EditIcon from "../icons/EditIcon";
+import WatchIcon from "../icons/WatchIcon";
+import type { Task } from "../types";
+import IconButton from "./IconButton";
+import StatusBadge from "./StatusBadge";
 
 interface TaskItemProps {
   task: Task;
-  onQuickComplete?: (id: string) => void;
   onDelete: (id: string) => void;
   onOpenEdit: (task: Task) => void;
-  isAnimating?: boolean;
-  isRemoving?: boolean;
 }
 
 const formatDate = (d: Date) => {
   try {
     return d.toLocaleDateString(undefined, {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
+      weekday: "short",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
     });
   } catch {
-    return '';
+    return "";
   }
 };
-
-const statusLabel: Record<TaskStatus, string> = {
-  pending: 'Pending',
-  in_progress: 'In Progress',
-  completed: 'Completed'
-};
-
-const TaskItem: React.FC<TaskItemProps> = ({ task, onDelete, onOpenEdit, isAnimating = false, isRemoving = false }) => {
+export const TaskItem: React.FC<TaskItemProps> = ({
+  task,
+  onDelete,
+  onOpenEdit,
+}) => {
   const dateStr = formatDate(task.createdAt);
 
-  const isCompleted = task.status === 'completed';
-
   return (
-    <li className={`task-row modern ${task.status} ${isCompleted ? 'is-complete' : ''} ${isAnimating ? 'task-entering' : ''} ${isRemoving ? 'task-exiting' : ''}`}>
-      <div>
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="15" cy="15" r="14.5" fill="white" stroke="#034EA2" />
-          <path d="M12.6784 9.8H14.0384V19.72H18.4384V21H12.6784V9.8Z" fill="#034EA2" />
-        </svg>
+    <div className={`task-item`}>
+      <div className="watch-icon">
+        <WatchIcon />
       </div>
-      <div className='ti-left'>
-        <div className="ti-header">
-          <button
-            type="button"
-            className={`ti-title-btn ${isCompleted ? 'done' : ''}`}
-            onClick={() => onOpenEdit(task)}
-            aria-label={`View / edit task: ${task.title}`}
+      <div className="task-details">
+        <div
+          className="flex"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <h3
+            className="task-title"
+            style={{
+              fontSize: "0.8rem",
+              fontWeight: "semibold",
+              color: "var(--c-brand)",
+              margin: 0,
+            }}
           >
             {task.title}
-          </button>
-          <span className="ti-status" data-status={task.status}>
-            <span className="dot" aria-hidden />
-            {statusLabel[task.status]}
-          </span>
+          </h3>
+          <StatusBadge status={task.status} />
         </div>
-        <div className="ti-content" onDoubleClick={() => onOpenEdit(task)}>
 
-          {task.description && (
-            <p className="ti-desc">{task.description}</p>
-          )}
-
-        </div>
-        <div className='ti-right'>
+        {task.description && <p className="ti-desc">{task.description}</p>}
+        <div className="ti-act">
           <div className="ti-meta">
             <time dateTime={task.createdAt.toISOString()}>{dateStr}</time>
           </div>
-          <div className="ti-actions" >
-
-            <button
-              className="ti-act edit"
-              title="Edit"
-              aria-label="Edit"
-              onClick={() => onOpenEdit(task)}
-            >
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.741 8.25767C12.9927 7.92874 12.9302 7.45801 12.6013 7.20625C12.2723 6.95449 11.8016 7.01705 11.5498 7.34597L12.741 8.25767ZM6.27813 15.4674L6.85712 15.9442C6.86277 15.9373 6.8683 15.9303 6.8737 15.9233L6.27813 15.4674ZM6.10802 15.9029L5.35935 15.8562L5.35875 15.8697L6.10802 15.9029ZM5.96875 19.0518L5.21948 19.0187C5.21791 19.0543 5.21887 19.0899 5.22236 19.1253L5.96875 19.0518ZM6.75165 19.7674L6.77732 20.517C6.8296 20.5152 6.88154 20.508 6.9323 20.4954L6.75165 19.7674ZM9.73603 19.0268L9.9167 19.7548L9.92878 19.7516L9.73603 19.0268ZM10.119 18.7727L10.7082 19.2368L10.7145 19.2287L10.119 18.7727ZM16.723 11.3828C16.9749 11.054 16.9124 10.5832 16.5836 10.3314C16.2547 10.0795 15.784 10.142 15.5321 10.4708L16.723 11.3828ZM11.553 7.34577C11.3011 7.67461 11.3635 8.14537 11.6923 8.39723C12.0212 8.6491 12.4919 8.5867 12.7438 8.25786L11.553 7.34577ZM13.7281 5.73932L14.3235 6.19536C14.333 6.18303 14.3421 6.1704 14.3507 6.1575L13.7281 5.73932ZM15.3486 5.40598L15.8414 4.8406C15.8177 4.81991 15.7927 4.80074 15.7665 4.7832L15.3486 5.40598ZM17.574 7.34557L18.1169 6.82808C18.1009 6.81135 18.0842 6.79537 18.0668 6.78018L17.574 7.34557ZM17.9092 8.20065L18.6592 8.20458V8.20458L17.9092 8.20065ZM17.565 9.05182L17.0279 8.5284C17.0072 8.5496 16.9878 8.57201 16.9698 8.5955L17.565 9.05182ZM15.5324 10.4705C15.2803 10.7992 15.3425 11.27 15.6712 11.522C16 11.774 16.4708 11.7119 16.7228 11.3831L15.5324 10.4705ZM12.8908 7.69557C12.8322 7.28553 12.4522 7.0007 12.0421 7.05938C11.6321 7.11806 11.3473 7.49803 11.406 7.90807L12.8908 7.69557ZM16.2332 11.6693C16.6433 11.611 16.9284 11.2313 16.8701 10.8212C16.8117 10.4111 16.432 10.1259 16.0219 10.1843L16.2332 11.6693ZM11.5498 7.34597L5.68256 15.0116L6.8737 15.9233L12.741 8.25767L11.5498 7.34597ZM5.69914 14.9907C5.49631 15.2371 5.37909 15.5412 5.35947 15.8562L6.85657 15.9495C6.85674 15.9467 6.85731 15.9447 6.85776 15.9436C6.85821 15.9424 6.85829 15.9427 6.85712 15.9442L5.69914 14.9907ZM5.35875 15.8697L5.21948 19.0187L6.71802 19.085L6.85729 15.936L5.35875 15.8697ZM5.22236 19.1253C5.29929 19.9064 5.95311 20.5452 6.77732 20.517L6.72598 19.0179C6.72812 19.0178 6.73116 19.0183 6.73342 19.0192C6.73516 19.0198 6.73423 19.0199 6.73163 19.0175C6.72645 19.0127 6.71736 19.0009 6.71514 18.9783L5.22236 19.1253ZM6.9323 20.4954L9.91667 19.7547L9.55538 18.2989L6.57101 19.0395L6.9323 20.4954ZM9.92878 19.7516C10.2401 19.6688 10.5118 19.486 10.7082 19.2368L9.52988 18.3085C9.52896 18.3097 9.53242 18.3049 9.54327 18.302L9.92878 19.7516ZM10.7145 19.2287L16.723 11.3828L15.5321 10.4708L9.52357 18.3166L10.7145 19.2287ZM12.7438 8.25786L14.3235 6.19536L13.1327 5.28327L11.553 7.34577L12.7438 8.25786ZM14.3507 6.1575C14.4945 5.94341 14.7465 5.90513 14.9307 6.02877L15.7665 4.7832C14.8743 4.18445 13.6973 4.4401 13.1055 5.32113L14.3507 6.1575ZM14.8559 5.97137L17.0812 7.91096L18.0668 6.78018L15.8414 4.8406L14.8559 5.97137ZM17.0311 7.86305C17.1101 7.94587 17.1599 8.06542 17.1592 8.19671L18.6592 8.20458C18.6618 7.695 18.4703 7.19886 18.1169 6.82808L17.0311 7.86305ZM17.1592 8.19671C17.1585 8.32799 17.1074 8.44674 17.0279 8.5284L18.1022 9.57523C18.4597 9.20831 18.6565 8.71418 18.6592 8.20458L17.1592 8.19671ZM16.9698 8.5955L15.5324 10.4705L16.7228 11.3831L18.1602 9.50814L16.9698 8.5955ZM11.406 7.90807C11.7472 10.2925 13.8735 12.0051 16.2332 11.6693L16.0219 10.1843C14.543 10.3947 13.1237 9.32285 12.8908 7.69557L11.406 7.90807Z" fill="#034EA2" />
-              </svg>
-
-            </button>
-            <button
-              className="ti-act delete"
-              title="Delete"
-              aria-label="Delete"
+          <div className="task-actions">
+            <IconButton icon={<EditIcon />} onClick={() => onOpenEdit(task)} />
+            <IconButton
+              icon={<DeleteIcon />}
               onClick={() => onDelete(task.id)}
-            >
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16.0828 9.37512H7.79216C7.33451 9.37512 6.9635 9.76361 6.9635 10.2428V17.1876C6.9635 18.6259 8.07696 19.7918 9.45048 19.7918H14.4244C15.084 19.7918 15.7166 19.5174 16.183 19.029C16.6494 18.5407 16.9114 17.8783 16.9114 17.1876V10.2428C16.9114 9.76361 16.5404 9.37512 16.0828 9.37512Z" stroke="#E32A34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.9219 7.29173L14.8164 7.07194C14.2712 5.9298 13.1564 5.20831 11.937 5.20831C10.7176 5.20831 9.60282 5.9298 9.05758 7.07194L8.95312 7.29173H14.9219Z" stroke="#E32A34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M11.0291 12.847C11.0291 12.4327 10.6934 12.097 10.2791 12.097C9.86493 12.097 9.52914 12.4327 9.52914 12.847H11.0291ZM9.52914 16.3188C9.52914 16.733 9.86493 17.0688 10.2791 17.0688C10.6934 17.0688 11.0291 16.733 11.0291 16.3188H9.52914ZM14.3458 12.847C14.3458 12.4327 14.01 12.097 13.5958 12.097C13.1816 12.097 12.8458 12.4327 12.8458 12.847H14.3458ZM12.8458 16.3188C12.8458 16.733 13.1816 17.0688 13.5958 17.0688C14.01 17.0688 14.3458 16.733 14.3458 16.3188H12.8458ZM14.9218 6.54175C14.5076 6.54175 14.1718 6.87753 14.1718 7.29175C14.1718 7.70596 14.5076 8.04175 14.9218 8.04175V6.54175ZM16.9114 8.04175C17.3256 8.04175 17.6614 7.70596 17.6614 7.29175C17.6614 6.87753 17.3256 6.54175 16.9114 6.54175V8.04175ZM8.95308 8.04175C9.3673 8.04175 9.70308 7.70596 9.70308 7.29175C9.70308 6.87753 9.3673 6.54175 8.95308 6.54175V8.04175ZM6.9635 6.54175C6.54929 6.54175 6.2135 6.87753 6.2135 7.29175C6.2135 7.70596 6.54929 8.04175 6.9635 8.04175V6.54175ZM9.52914 12.847V16.3188H11.0291V12.847H9.52914ZM12.8458 12.847V16.3188H14.3458V12.847H12.8458ZM14.9218 8.04175H16.9114V6.54175H14.9218V8.04175ZM8.95308 6.54175H6.9635V8.04175H8.95308V6.54175Z" fill="#E32A34" />
-              </svg>
-
-            </button>
+            />
           </div>
         </div>
       </div>
-    </li>
-
+    </div>
   );
 };
-
 export default TaskItem;

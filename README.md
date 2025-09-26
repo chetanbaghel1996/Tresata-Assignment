@@ -1,95 +1,73 @@
-## Task Manager (React + TypeScript + Vite)
+# React + TypeScript + Vite
 
-A responsive task management application built in React + TypeScript following a Figma-inspired layout (grouped sections, blue brand bar, light theme). Users can add, edit, update status, search, and delete tasks. Tasks persist via Local Storage.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### Core Features
-* Add new tasks (title, description, initial status)
-* Edit existing tasks (change title, description, status)
-* Status workflow: Pending → In Progress → Completed
-* Grouped collapsible sections: In Progress, Pending, Completed
-* Quick complete action icon on rows
-* Search bar filters across title & description
-* Local Storage persistence with migration from legacy boolean `completed`
-* Accessible buttons & semantic status indicators
+Currently, two official plugins are available:
 
-### UI / UX Highlights
-* Two-mode layout: list panel + detail panel (Add/Edit)
-* Lightweight status dropdown with custom dot indicators
-* Compact row design with icon, status badge, description snippet, created date
-* Collapsible sections with counts
-* Light theme with subtle borders & shadows
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### Tech Stack
-* React + TypeScript (Vite)
-* Custom hook `useTasks` encapsulates: state, persistence, filtering, search, status migration
-* Plain CSS (no UI library) for full control and assessment clarity
+## React Compiler
 
-### Project Structure (key files)
-```
-src/
-  components/
-    AddEditTaskForm.tsx
-    CollapsibleSection.tsx
-    PageHeader.tsx
-    SearchBar.tsx
-    StatusBadge.tsx
-    TaskItem.tsx
-    TaskList.tsx
-  hooks/
-    useTasks.ts
-  types/
-    index.ts
-  App.tsx
-  App.css
-```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### Running Locally
-Install dependencies and start the dev server:
-```bash
-npm install
-npm run dev
-```
-Then open the shown local URL (usually http://localhost:5173).
+## Expanding the ESLint configuration
 
-To create a production build:
-```bash
-npm run build
-npm run preview
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-### Design Decisions
-* Central `useTasks` hook avoids prop drilling and isolates persistence/search/status logic.
-* Introduced `TaskStatus` enum (pending | in_progress | completed) replacing legacy boolean while preserving backward compatibility.
-* Grouped rendering done in `App` for clarity instead of nested conditionals inside list component.
-* UI components are stateless where possible; form manages its own local controlled fields.
-* Minimal global CSS with focused class names; easy theming by adjusting color tokens.
-* Migrates and normalizes stored tasks defensively with type guards.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-### Extensibility Ideas
-* Drag & drop manual ordering within sections
-* Virtualized list for very large task volumes
-* Due dates, reminders & calendar integration
-* Bulk actions (multi-select + batch status)
-* Backend sync (REST / GraphQL) & optimistic reconciliation
-* Vitest + React Testing Library coverage
-* Theme system (CSS variables: dark theme reintroduction)
-* Sorting controls (recent, alpha, status)
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-### Edge Cases & Safeguards
-* Empty or whitespace-only titles ignored
-* Legacy tasks without status auto-mapped using old `completed` boolean
-* Defensive parsing of Local Storage with try/catch and shape normalization
-* Search applied after status grouping so empty groups collapse gracefully
-* Safe date fallback if stored timestamps are missing
-
-### Accessibility Notes
-* Icon buttons include `aria-label` attributes
-* Status represented by both text & colored dot (non-color dependent)
-* Form fields labeled via placeholders + structural semantics; could be enhanced with explicit `<label>` tags in future
-* Keyboard friendly: Enter submits, Escape can rely on navigation/back (future enhancement: add explicit cancel key binding)
-
-### License
-This codebase is for assessment/demo purposes. Adapt freely as needed.
-
----
-Feel free to extend functionality—`useTasks` is the main integration point for advanced behaviors.
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
