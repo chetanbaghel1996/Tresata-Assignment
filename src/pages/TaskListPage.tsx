@@ -40,16 +40,7 @@ export const TaskListPage = () => {
     <>
       <div className="task-list-content">
         <SearchBar value={search} onChange={setSearch} />
-        <div
-          className="task-sections"
-          style={{
-            marginTop: "24px",
-            marginBottom: "24px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
+        <div className="task-sections">
           {showStatus[TaskStatus.IN_PROGRESS] && (
             <CollapsibleSection
               title="In Progress"
