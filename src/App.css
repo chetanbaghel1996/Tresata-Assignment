@@ -81,6 +81,7 @@ body {
   font-weight: 400;
   letter-spacing: 0.3px;
   color: #475569;
+  min-width: 70px;
 }
 .ti-status .dot {
   width: 8px;
