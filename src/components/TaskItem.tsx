@@ -2,13 +2,14 @@ import DeleteIcon from "../icons/DeleteIcon";
 import EditIcon from "../icons/EditIcon";
 import WatchIcon from "../icons/WatchIcon";
 import type { Task } from "../types";
-import IconButton from "./IconButton";
 import StatusBadge from "./StatusBadge";
+import IconButton from "./IconButton";
 
 interface TaskItemProps {
   task: Task;
   onDelete: (id: string) => void;
   onOpenEdit: (task: Task) => void;
+  showIcon?: boolean;
 }
 
 const formatDate = (d: Date) => {
@@ -23,18 +24,22 @@ const formatDate = (d: Date) => {
     return "";
   }
 };
-export const TaskItem: React.FC<TaskItemProps> = ({
+
+const TaskItem: React.FC<TaskItemProps> = ({
   task,
   onDelete,
   onOpenEdit,
+  showIcon = true,
 }) => {
   const dateStr = formatDate(task.createdAt);
 
   return (
-    <div className={`task-item`}>
-      <div className="watch-icon">
-        <WatchIcon />
-      </div>
+    <div className="task-item">
+      {showIcon && (
+        <div className="watch-icon">
+          <WatchIcon />
+        </div>
+      )}
       <div className="task-details">
         <div
           className="detail-box"
@@ -59,6 +64,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         </div>
 
         {task.description && <p className="ti-desc">{task.description}</p>}
+
         <div className="ti-act">
           <div className="ti-meta">
             <time dateTime={task.createdAt.toISOString()}>{dateStr}</time>
@@ -75,4 +81,5 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     </div>
   );
 };
+
 export default TaskItem;

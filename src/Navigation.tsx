@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import TaskList from "./pages/TaskListPage";
-import EditTask from "./pages/EditTask";
 import { Layout } from "./templates/layout";
+import EditTask from "./pages/EditTask";
 
 export const Navigation = () => {
   return (
