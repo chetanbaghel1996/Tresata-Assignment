@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { TaskStatus } from "../types";
 import { useTasks } from "../hooks/useTasks";
-import AddEditTaskFormV2 from "../components/AddEditTaskForm";
+import AddEditTaskForm from "../components/AddEditTaskForm";
 
 interface EditTaskProps {
   mode: "add" | "edit";
@@ -55,7 +55,7 @@ const EditTask: React.FC<EditTaskProps> = ({ mode, submitLabel, taskId }) => {
   };
 
   return (
-    <AddEditTaskFormV2
+    <AddEditTaskForm
       mode={mode}
       initial={
         initialTask
