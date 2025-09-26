@@ -37,8 +37,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       </div>
       <div className="task-details">
         <div
-          className="flex"
-          style={{ display: "flex", justifyContent: "space-between" }}
+          className="detail-box"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "0.8rem",
+          }}
         >
           <h3
             className="task-title"
